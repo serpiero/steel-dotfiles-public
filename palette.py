@@ -33,7 +33,7 @@ def palette(wall):
     p = dict(background=color(.105,.17), low=color(.13,.18), surface=color(.105,.17),
              high=color(.19,.16), highest=color(.235,.14), text=color(.86,.14),
              muted=color(.65,.13), accent=color(.68,.24), selection=color(.27,.20),
-             wine='#bd9299', sage='#9aafa4', warm='#b9ae98')
+             wine=color(.65,.20,.35), sage=color(.65,.15,-.25), warm=color(.65,.15,-.45))
     # Approved fixed base shared with Firefox; wallpaper tint affects accents only.
     from theme import palette as resolve_palette, terminal as terminal_theme, fingerprint
     p = resolve_palette(ROOT, derived=p)
@@ -55,10 +55,7 @@ def palette(wall):
     tokens.update(error=p['wine'], success=p['sage'])
     write(ROOT/'ui/state/user/generated/colors.json', json.dumps(tokens,indent=2)+'\n')
     write(ROOT/'obsidian/generated/spectrum.json', json.dumps(p,indent=2)+'\n')
-    ansi = [p['low'], '#aa7c85', '#829c91', '#a79d87', color(.60,.24),
-            color(.61,.16,.055), color(.64,.23,-.045), p['text'], p['highest'],
-            p['wine'], p['sage'], p['warm'], color(.74,.25),
-            color(.74,.17,.055), color(.75,.23,-.045), color(.94,.12)]
+    ansi = [p['low'], p['wine'], p['sage'], p['warm'], p['accent'], p['wine'], p['terminal_accent'], p['text'], p['muted'], p['wine'], p['sage'], p['warm'], p['accent'], p['wine'], p['terminal_accent'], p['text']]
     kitty = ROOT/'obsidian/kitty.conf'
     terminal_text = terminal_tokens['foreground']
     terminal_accent = terminal_tokens['accent']
@@ -76,7 +73,7 @@ def palette(wall):
     prompt = '''# Obsidian: Kali-style two-line prompt without Powerline separators.
 add_newline = true
 palette = "obsidian_steel"
-format = "[╭─](accent)[SERPIERO](bold text) $directory$git_branch$git_status\\n[╰─](accent)$character"
+format = "[╭─](accent)[@PROMPT_LABEL@](bold text) $directory$git_branch$git_status\\n[╰─](accent)$character"
 
 [directory]
 style = "accent"
@@ -98,7 +95,7 @@ format = "$symbol "
 
 [palettes.obsidian_steel]
 '''
-    prompt = prompt.replace('SERPIERO', terminal_tokens['prompt_label'])
+    prompt = prompt.replace('@PROMPT_LABEL@', terminal_tokens['prompt_label'])
     prompt_colors = dict(p, text=terminal_text, accent=terminal_accent)
     prompt += ''.join(f'{k} = "{prompt_colors[k]}"\n' for k in ('text','accent','muted','wine','sage'))
     write(ROOT/'obsidian/starship.toml',prompt)
@@ -137,7 +134,20 @@ format = "$symbol "
         config.write(output, space_around_delimiters=False)
         write(qt, output.getvalue())
     if (ROOT/'app-style.py').exists():
-        subprocess.run([sys.executable,str(ROOT/'app-style.py'),'prepare'],check=True,timeout=15)
+        subprocess.run([sys.executable,str(ROOT/'app-style.py'),'prepare'],check=True,timeout=180)
+    # Refresh only this desktop's owned profiles; do not change shared KDE state.
+    from importlib.util import spec_from_file_location, module_from_spec
+    if (ROOT/'INSTALLATION.json').is_file() or (ROOT == (Path.home()/'.local/share/rice-profiles').resolve() and (ROOT/'active').is_file()):
+        spec=spec_from_file_location('steel_firefox_refresh',ROOT/'tools/firefox-theme.py')
+        adapter=module_from_spec(spec);spec.loader.exec_module(adapter);adapter.refresh(ROOT)
+    sequences='\033]10;'+terminal_text+'\007\033]11;'+p['background']+'\007\033]12;'+terminal_accent+'\007'
+    sequences+=''.join('\033]4;'+str(i)+';'+value+'\007' for i,value in enumerate(ansi))
+    write(ROOT/'obsidian/generated/terminal-sequences.txt',sequences)
+    desktop=os.environ.get('XDG_CURRENT_DESKTOP','').lower()
+    if 'hyprland' in desktop and 'kde' not in desktop and 'plasma' not in desktop:
+        subprocess.run([sys.executable,str(ROOT/'wine-style.py')],check=True,timeout=40)
+        if os.environ.get('HYPRLAND_INSTANCE_SIGNATURE'):
+            subprocess.run(['hyprctl','reload'],check=True,capture_output=True,timeout=15)
     write(ROOT/'palette-source.json',json.dumps({'wallpaper':str(wall),'mtime':wall.stat().st_mtime_ns,'theme':fingerprint(ROOT),'hue':round(hue,4),'scheme':'steel-v2'}))
     # Refresh only terminals explicitly using this profile's configuration.
     for proc in Path('/proc').iterdir():

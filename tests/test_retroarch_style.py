@@ -38,4 +38,4 @@ class RetroarchStyleTests(unittest.TestCase):
                 for option in (['--config','/chosen.cfg'],['-c','/chosen.cfg'],['--config=/chosen.cfg']):
                     args=['retroarch',*option];env={};style.retroarch_client(args,env)
                     self.assertEqual(args,[str(client),*option])
-                    self.assertEqual(env,{})
+                    self.assertEqual(env,{'OBSIDIAN_RETROARCH_PALETTE':str(root/'native/retroarch.palette')})

@@ -10,6 +10,21 @@ function script(options) {
         const css = [
             'html{color-scheme:dark!important;scrollbar-width:none!important;}',
             '*::-webkit-scrollbar{width:0!important;height:0!important;display:none!important;}',
+            location.hostname === host ? [
+                ':root,.dark,[data-theme="dark"]{'+
+                '--main-surface-primary:'+options.background+'!important;--main-surface-secondary:'+options.background+'!important;'+
+                '--main-surface-tertiary:'+options.separator+'!important;--sidebar-surface-primary:'+options.background+'!important;'+
+                '--sidebar-surface-secondary:'+options.separator+'!important;--bg-primary:'+options.background+'!important;'+
+                '--bg-secondary:'+options.background+'!important;--bg-tertiary:'+options.separator+'!important;'+
+                '--text-primary:'+(options.text || options.separator)+'!important;--text-secondary:'+(options.muted || options.text || options.separator)+'!important;'+
+                '--app-color-background:'+options.background+'!important;--color-surface:'+options.background+'!important;'+
+                '--background:'+options.background+'!important;--panel-background:'+options.background+'!important;'+
+                '--conversation-panel-background:'+options.background+'!important;--incoming-background:'+options.separator+'!important;'+
+                '--outgoing-background:'+options.separator+'!important;--primary:'+(options.text || options.separator)+'!important;'+
+                '--secondary:'+(options.muted || options.text || options.separator)+'!important;}',
+                'html,body,main,chat-window,bard-sidenav-container{background-color:'+options.background+'!important;color:'+(options.text || options.separator)+'!important;}',
+                '::selection{background:'+options.separator+'!important;}',
+            ].join('') : '',
             compact ? [
                 'html,body,#wrap,main{background:'+options.background+'!important;background-image:none!important;min-width:0!important;box-sizing:border-box!important;}',
                 'header.page,.calendar,.topost,.audiosex,.ReqFeed,.welcome,.MainSRC,.post article aside.rls{display:none!important;}',

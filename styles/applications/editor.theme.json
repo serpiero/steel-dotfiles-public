@@ -1,0 +1,239 @@
+{
+  "metadata": {
+    "copyright": [
+      "SPDX-FileCopyrightText: 2016 Volker Krause <vkrause@kde.org>",
+      "SPDX-FileCopyrightText: 2016 Dominik Haumann <dhaumann@kde.org>"
+    ],
+    "license": "SPDX-License-Identifier: MIT",
+    "revision": 15,
+    "name": "Obsidian"
+  },
+  "text-styles": {
+    "Normal": {
+      "text-color": "{text}",
+      "selected-text-color": "{text}",
+      "bold": false,
+      "italic": false,
+      "underline": false,
+      "strike-through": false
+    },
+    "Keyword": {
+      "text-color": "{accent}",
+      "selected-text-color": "{accent}",
+      "bold": true
+    },
+    "Function": {
+      "text-color": "{accent}",
+      "selected-text-color": "{accent}"
+    },
+    "Variable": {
+      "text-color": "{text}",
+      "selected-text-color": "{text}"
+    },
+    "ControlFlow": {
+      "text-color": "{accent}",
+      "selected-text-color": "{accent}",
+      "bold": true
+    },
+    "Operator": {
+      "text-color": "{accent}",
+      "selected-text-color": "{accent}"
+    },
+    "BuiltIn": {
+      "text-color": "{accent}",
+      "selected-text-color": "{accent}"
+    },
+    "Extension": {
+      "text-color": "{text}",
+      "selected-text-color": "{text}",
+      "bold": true
+    },
+    "Preprocessor": {
+      "text-color": "{accent}",
+      "selected-text-color": "{accent}"
+    },
+    "Attribute": {
+      "text-color": "{accent}",
+      "selected-text-color": "{accent}"
+    },
+    "Char": {
+      "text-color": "{sage}",
+      "selected-text-color": "{sage}"
+    },
+    "SpecialChar": {
+      "text-color": "{sage}",
+      "selected-text-color": "{sage}"
+    },
+    "String": {
+      "text-color": "{sage}",
+      "selected-text-color": "{sage}"
+    },
+    "VerbatimString": {
+      "text-color": "{sage}",
+      "selected-text-color": "{sage}"
+    },
+    "SpecialString": {
+      "text-color": "{sage}",
+      "selected-text-color": "{sage}"
+    },
+    "Import": {
+      "text-color": "{text}",
+      "selected-text-color": "{text}"
+    },
+    "DataType": {
+      "text-color": "{text}",
+      "selected-text-color": "{text}"
+    },
+    "DecVal": {
+      "text-color": "{text}",
+      "selected-text-color": "{text}"
+    },
+    "BaseN": {
+      "text-color": "{text}",
+      "selected-text-color": "{text}"
+    },
+    "Float": {
+      "text-color": "{warm}",
+      "selected-text-color": "{warm}"
+    },
+    "Constant": {
+      "text-color": "{warm}",
+      "selected-text-color": "{warm}",
+      "bold": true
+    },
+    "Comment": {
+      "text-color": "{muted}",
+      "selected-text-color": "{muted}"
+    },
+    "Documentation": {
+      "text-color": "{sage}",
+      "selected-text-color": "{sage}"
+    },
+    "Annotation": {
+      "text-color": "{text}",
+      "selected-text-color": "{text}"
+    },
+    "CommentVar": {
+      "text-color": "{muted}",
+      "selected-text-color": "{muted}"
+    },
+    "RegionMarker": {
+      "text-color": "{muted}",
+      "selected-text-color": "{muted}",
+      "background-color": "{muted}"
+    },
+    "Information": {
+      "text-color": "{text}",
+      "selected-text-color": "{text}"
+    },
+    "Warning": {
+      "text-color": "{wine}",
+      "selected-text-color": "{wine}"
+    },
+    "Alert": {
+      "text-color": "{wine}",
+      "selected-text-color": "{wine}",
+      "background-color": "{wine}",
+      "bold": true
+    },
+    "Error": {
+      "text-color": "{wine}",
+      "selected-text-color": "{wine}",
+      "underline": true
+    },
+    "Others": {
+      "text-color": "{text}",
+      "selected-text-color": "{text}"
+    }
+  },
+  "custom-styles": {
+    "CSV": {
+      "Column 1": {
+        "selected-text-color": "{text}",
+        "text-color": "{text}"
+      },
+      "Column 4": {
+        "selected-text-color": "{text}",
+        "text-color": "{text}"
+      },
+      "Column 5": {
+        "selected-text-color": "{text}",
+        "text-color": "{text}"
+      },
+      "Column 6": {
+        "selected-text-color": "{text}",
+        "text-color": "{text}"
+      },
+      "Column 7": {
+        "selected-text-color": "{text}",
+        "text-color": "{text}"
+      },
+      "Column 8": {
+        "selected-text-color": "{text}",
+        "text-color": "{text}"
+      },
+      "Column 9": {
+        "selected-text-color": "{text}",
+        "text-color": "{text}"
+      },
+      "Column 1 Separator": {
+        "selected-text-color": "{muted}",
+        "text-color": "{muted}"
+      },
+      "Column 4 Separator": {
+        "selected-text-color": "{muted}",
+        "text-color": "{muted}"
+      },
+      "Column 5 Separator": {
+        "selected-text-color": "{muted}",
+        "text-color": "{muted}"
+      },
+      "Column 6 Separator": {
+        "selected-text-color": "{muted}",
+        "text-color": "{muted}"
+      },
+      "Column 7 Separator": {
+        "selected-text-color": "{muted}",
+        "text-color": "{muted}"
+      },
+      "Column 8 Separator": {
+        "selected-text-color": "{muted}",
+        "text-color": "{muted}"
+      },
+      "Column 9 Separator": {
+        "selected-text-color": "{muted}",
+        "text-color": "{muted}"
+      }
+    }
+  },
+  "editor-colors": {
+    "BackgroundColor": "{background}",
+    "CodeFolding": "{muted}",
+    "BracketMatching": "{selection}",
+    "CurrentLine": "{text}",
+    "IconBorder": "{background}",
+    "IndentationLine": "{muted}",
+    "LineNumbers": "{muted}",
+    "CurrentLineNumber": "{warm}",
+    "MarkBookmark": "{text}",
+    "MarkBreakpointActive": "{wine}",
+    "MarkBreakpointReached": "{wine}",
+    "MarkBreakpointDisabled": "{wine}",
+    "MarkExecution": "{text}",
+    "MarkWarning": "{wine}",
+    "MarkError": "{wine}",
+    "ModifiedLines": "{text}",
+    "ReplaceHighlight": "{selection}",
+    "SavedLines": "{text}",
+    "SearchHighlight": "{selection}",
+    "TextSelection": "{selection}",
+    "Separator": "{muted}",
+    "SpellChecking": "{text}",
+    "TabMarker": "{muted}",
+    "TemplateBackground": "{background}",
+    "TemplatePlaceholder": "{selection}",
+    "TemplateFocusedPlaceholder": "{selection}",
+    "TemplateReadOnlyPlaceholder": "{selection}",
+    "WordWrapMarker": "{muted}"
+  }
+}

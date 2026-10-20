@@ -32,27 +32,7 @@ def append_styles(source, target, css_path):
     if css_path.stem=='discord':
         host=str(source.parent.parent/'Discord')
         host_setup='process.execPath='+json.dumps(host)+'; app.setPath("exe",'+json.dumps(host)+');' 
-    js='''const {app}=require('electron');
-const fs=require('node:fs');
-HOST_SETUP
-if ((process.env.XDG_CURRENT_DESKTOP||'').toLowerCase().includes('hyprland')) {
-  app.on('web-contents-created',(_,contents)=> {
-    let previous=null;
-    contents.on('did-finish-load',async()=> {
-      try {
-        const css=fs.readFileSync(CSS_PATH,'utf8');
-        if(previous) {try {await contents.removeInsertedCSS(previous);} catch (_) {}}
-        previous=await contents.insertCSS(css,{cssOrigin:'user'});
-        if(process.env.OBSIDIAN_STYLE_TEST_OUTPUT) {
-          const result=await contents.executeJavaScript('({body:getComputedStyle(document.body).backgroundColor,root:getComputedStyle(document.documentElement).backgroundColor})');
-          fs.writeFileSync(process.env.OBSIDIAN_STYLE_TEST_OUTPUT,JSON.stringify(result));
-        }
-      } catch(error) {console.warn('[Obsidian palette]',error.message);}
-    });
-  });
-}
-require(ORIGINAL_MAIN);
-'''.replace('HOST_SETUP',host_setup).replace('CSS_PATH',json.dumps(str(css_path))).replace('ORIGINAL_MAIN',json.dumps('./'+original))
+    js=(ROOT/'styles/applications/electron-bootstrap.cjs').read_text().replace('HOST_SETUP',host_setup).replace('CSS_PATH',json.dumps(str(css_path))).replace('ORIGINAL_MAIN',json.dumps('./'+original)).replace('CONTEXT_MENU_MODULE',json.dumps(str(ROOT/'styles/applications/electron-context-menu.cjs'))).replace('NATIVE_PALETTE_PATH',json.dumps(str(STYLE/'native/palette.json')))
     offset=source.stat().st_size-start; appended=[]
     for name,data in [('package.json',json.dumps(package,separators=(',',':')).encode()),('obsidian-bootstrap.cjs',js.encode())]:
         header['files'][name]=dict(metadata(data),offset=str(offset));offset+=len(data);appended.append(data)
@@ -74,7 +54,8 @@ def prepare(name, executable):
     if not source.exists(): raise FileNotFoundError(source)
     target=STYLE/'clients'/name
     stamp=target/'obsidian-source.json'
-    signature={'source':str(source),'mtime':source.stat().st_mtime_ns,'cssmtime':(STYLE/(name+'.css')).stat().st_mtime_ns,'adaptermtime':Path(__file__).stat().st_mtime_ns}
+    signature={'source':str(source),'mtime':source.stat().st_mtime_ns,
+               'adapter':hashlib.sha256(Path(__file__).read_bytes()+(ROOT/'styles/applications/electron-bootstrap.cjs').read_bytes()).hexdigest()}
     if stamp.exists() and json.loads(stamp.read_text())==signature:return target/executable.name
     target.mkdir(parents=True,exist_ok=True)
     for p in folder.iterdir():

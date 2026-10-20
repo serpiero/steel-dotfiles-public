@@ -39,7 +39,7 @@ Control {
 
     function themeScript(site) {
         return WebPanelTheme.script({id:site.id, url:site.url, theme:site.theme,
-            background:Appearance.colors.colLayer0Base.toString(), separator:Appearance.colors.colLayer0Border.toString(), lookAhead:site.lookAhead});
+            text:Appearance.colors.colOnLayer0.toString(), muted:Appearance.colors.colOnLayer1Inactive.toString(), background:Appearance.colors.colLayer0Base.toString(), separator:Appearance.colors.colLayer0Border.toString(), lookAhead:site.lookAhead});
     }
     function applyPagePalette() {
         if (!pages) return;
@@ -200,7 +200,7 @@ Control {
                             readonly property var site: root.siteDefinitions[siteLoader.index]
                             readonly property bool displayed: GlobalStates.sidebarLeftOpen && root.selectedSite===siteLoader.index
                             property int navigationStarts: 0
-                            property color nativeColor: site.theme==="compact-forum" ? Appearance.colors.colLayer0Base : (site.id==="chatgpt" ? "#111111" : "#131314")
+                            property color nativeColor: Appearance.colors.colLayer0Base
                             property bool preparing: true
                             property bool presentationReady: false
                             property bool hasPresentedContent: false
@@ -220,7 +220,7 @@ Control {
                             }
                             function sampleNativeColor() {
                                 if(site.theme==="compact-forum")return;
-                                runJavaScript("(function(){for(const selector of ['main','chat-window','bard-sidenav-container','body','html']){const node=document.querySelector(selector);if(!node)continue;const color=getComputedStyle(node).backgroundColor;if(color && color!=='transparent' && color!=='rgba(0, 0, 0, 0)')return color;}return null;})()",WebEngineScript.ApplicationWorld,color=>{if(color)siteView.nativeColor=color;});
+                                runJavaScript("(function(){for(const selector of ['main','chat-window','bard-sidenav-container','body','html']){const node=document.querySelector(selector);if(!node)continue;const color=getComputedStyle(node).backgroundColor;if(color && color!=='transparent' && color!=='rgba(0, 0, 0, 0)')return color;}return null;})()",WebEngineScript.ApplicationWorld,color=>{if(color)siteView.nativeColor=Qt.binding(()=>Appearance.colors.colLayer0Base);});
                             }
                             anchors.fill: parent
                             visible: displayed
@@ -418,6 +418,6 @@ Control {
         function onSidebarLeftOpenChanged() { if(GlobalStates.sidebarLeftOpen)root.visit(root.selectedSite); }
     }
     Connections { target:Config;function onReadyChanged() { root.initialize(); } }
-    Connections { target:Appearance.colors;function onColLayer0BaseChanged() { root.applyPagePalette(); } }
+    Connections { target:Appearance.colors;function onColLayer0BaseChanged() { root.applyPagePalette(); } function onColOnLayer0Changed() { root.applyPagePalette(); } function onColLayer0BorderChanged() { root.applyPagePalette(); } }
     Component.onCompleted: initialize()
 }

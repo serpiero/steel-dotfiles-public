@@ -33,15 +33,19 @@ def theme_command(arguments):
     parser = argparse.ArgumentParser(description='Paleta central de Steel (Hyprland).')
     parser.add_argument('operation', choices=['show', 'set', 'render', 'apply'])
     parser.add_argument('assignments', nargs='*', metavar='TOKEN=#RRGGBB')
-    parser.add_argument('--apply', action='store_true', help='Aplicar también a la instalación activa')
+    parser.add_argument('--apply', action='store_true', help='Aplicar a la instalación activa')
+    parser.add_argument('--no-apply', action='store_true', help='Solo generar, sin recargar aplicaciones')
     args = parser.parse_args(arguments)
     if args.assignments and args.operation != 'set':
         parser.error('Los colores solo se usan con set.')
     if args.operation == 'show':
         print(json.dumps(theme.palette(ROOT), indent=2))
         return
-    apply = args.operation == 'apply' or args.apply
-    if apply and not (ROOT / 'INSTALLATION.json').is_file():
+    if args.apply and args.no_apply:parser.error('Elige --apply o --no-apply.')
+    active=ROOT/'active'
+    installed=(ROOT/'INSTALLATION.json').is_file() or (active.is_file() and active.read_text().strip()=='obsidian' and ROOT==(Path.home()/'.local/share/rice-profiles').resolve())
+    apply = args.operation == 'apply' or args.apply or (args.operation == 'set' and installed and not args.no_apply)
+    if apply and not installed:
         parser.error('Aplica desde steel-ctl de la instalación; esta copia solo genera archivos.')
     if args.operation == 'set':
         if not args.assignments:
@@ -59,7 +63,10 @@ def theme_command(arguments):
         candidate = theme.merge(theme.load(ROOT), updated)
         theme.resolve_colors(candidate['palette']['colors'])
         save(updated, local)
-    subprocess.run([sys.executable, str(ROOT / 'theme.py'), 'apply' if apply else 'render'], check=True)
+    try:
+        subprocess.run([sys.executable, str(ROOT / 'theme.py'), 'apply' if apply else 'render'], check=True)
+    except subprocess.CalledProcessError:
+        raise SystemExit('No se completó la generación; revisa el error anterior antes de volver a aplicar.')
 
 
 def main():

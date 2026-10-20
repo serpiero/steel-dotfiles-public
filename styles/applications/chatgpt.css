@@ -10,8 +10,52 @@
  --bg-tertiary: var(--steel-low) !important;
  --bg-elevated-primary: var(--steel-background) !important;
  --bg-elevated-secondary: var(--steel-low) !important;
+ --bg-tooltip: var(--steel-high) !important;
+ --app-color-background-surface: var(--steel-background) !important;
+ --app-color-background-card: var(--steel-background) !important;
+ --app-color-background-surface-under: var(--steel-background) !important;
+ --app-color-background-elevated-primary: var(--steel-high) !important;
+ --app-color-background-elevated-secondary: var(--steel-high) !important;
+ --app-color-background-elevated-primary-opaque: var(--steel-high) !important;
+ --app-color-background-elevated-secondary-opaque: var(--steel-high) !important;
+ --app-color-background-elevated-tertiary-opaque: var(--steel-high) !important;
+ --app-color-background-editor-opaque: var(--steel-background) !important;
+ --app-color-background-shell: var(--steel-background) !important;
+ --app-color-background-application-menu: var(--steel-high) !important;
+ --app-color-background-control: var(--steel-high) !important;
+ --app-color-border: var(--steel-high) !important;
+ --app-color-border-light: var(--steel-high) !important;
+ --app-color-text-foreground: var(--steel-text) !important;
+ --app-color-text-foreground-secondary: var(--steel-muted) !important;
+ --color-surface: var(--steel-background) !important;
+ --color-surface-canvas: var(--steel-background) !important;
+ --color-surface-card: var(--steel-background) !important;
+ --color-surface-secondary: var(--steel-background) !important;
+ --color-surface-tertiary: var(--steel-low) !important;
+ --color-surface-elevated: var(--steel-high) !important;
+ --color-surface-elevated-secondary: var(--steel-high) !important;
+ --app-shell-panel-background: var(--steel-background) !important;
+ --app-shell-sidebar-popover-background: var(--steel-high) !important;
+ --app-shell-tab-background: var(--steel-background) !important;
+ --color-background-primary-surface: var(--steel-background) !important;
+ --color-background-secondary-surface: var(--steel-background) !important;
+ --color-background-tertiary-surface: var(--steel-low) !important;
+ --color-background-panel: var(--steel-background) !important;
+ --color-background-composer-primary: var(--steel-low) !important;
+ --color-background-composer-surface: var(--steel-low) !important;
+ --color-background-composer-action-bar: var(--steel-low) !important;
+ --color-background-user-message: var(--steel-high) !important;
+ --color-background-control-opaque: var(--steel-high) !important;
+ --color-background-primary-soft: var(--steel-low) !important;
+ --color-background-secondary-soft: var(--steel-low) !important;
+ --color-background-primary-solid: var(--steel-text) !important;
+ --text-primary: var(--steel-text) !important;
+ --text-secondary: var(--steel-muted) !important;
+ --border-default: var(--steel-high) !important;
+ color-scheme: dark !important;
 }
 html, body, .bg-token-main-surface-primary, .bg-token-main-surface-secondary,
-.bg-token-sidebar-surface-primary, .bg-token-sidebar-surface-secondary {
+.bg-token-sidebar-surface-primary, .bg-token-sidebar-surface-secondary,
+.bg-token-bg-primary, .bg-token-bg-secondary {
  background-color: var(--steel-background) !important;
 }

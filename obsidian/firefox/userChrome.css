@@ -83,3 +83,17 @@ sidebar-main, #navigator-toolbox, #nav-bar {
   :root, #navigator-toolbox, #nav-bar, #urlbar-container { min-width: 0 !important; }
   #navigator-toolbox, #sidebar-main, #sidebar-box { zoom: 1.25; }
 }
+
+/* All Firefox popup and inactive surface roles use the same palette. */
+:root {
+  --arrowpanel-background: var(--steel-background) !important;
+  --arrowpanel-color: var(--steel-text) !important;
+  --arrowpanel-border-color: var(--steel-selection) !important;
+  --lwt-text-color: var(--steel-text) !important;
+  --toolbar-color: var(--steel-text) !important;
+  --toolbar-field-color: var(--steel-text) !important;
+  --sidebar-text-color: var(--steel-text) !important;
+  --lwt-accent-color-inactive: var(--steel-background) !important;
+  --tab-selected-bgcolor: var(--steel-high) !important;
+  --tab-selected-textcolor: var(--steel-text) !important;
+}

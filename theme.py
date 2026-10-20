@@ -65,7 +65,7 @@ def fingerprint(root=ROOT):
     root = Path(root)
     digest = hashlib.sha256(json.dumps(load(root), sort_keys=True).encode())
     files = list((root / 'styles').rglob('*')) + list((root / 'features').glob('*/*.user.js.in'))
-    files += [root / name for name in ('theme.py', 'palette.py', 'app-style.py', 'workspace_icons.py')]
+    files += [root / name for name in ('theme.py', 'palette.py', 'app-style.py', 'workspace_icons.py', 'electron-style.py', 'wine-style.py', 'tools/firefox-theme.py', 'tools/firefox-live.py')]
     for path in sorted(p for p in files if p.is_file()):
         digest.update(str(path.relative_to(root)).encode()); digest.update(path.read_bytes())
     return digest.hexdigest()

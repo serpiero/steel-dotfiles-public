@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Build the stock Ozone interface with the current Steel semantic palette.
+"""Build the stock Ozone interface with a live semantic palette adapter.
 
 Uses a user-owned cache and installs only a private executable/assets. Re-run
-after changing the palette; subsequent builds reuse the existing object files.
+once after adapter changes; changing colors never requires recompilation.
 """
 from pathlib import Path
 import argparse
@@ -70,6 +70,23 @@ def patch_ozone(source, colors):
     return source
 
 
+def runtime_ozone(source):
+    adapter=(ROOT/'styles/applications/retroarch-palette.c').read_text()
+    marker='static void ozone_set_color_theme('
+    if source.count(marker)!=1:raise ValueError('Unsupported Ozone theme entry point')
+    source=source.replace(marker,adapter+'\n'+marker,1)
+    marker='   ozone_theme_t *theme = ozone_default_theme;'
+    source=source.replace(marker,marker+'\n   obsidian_palette_reload();',1)
+    start=source.index('static void ozone_frame(')
+    marker='   /* Reset thumbnail bar when starting/closing content */'
+    index=source.index(marker,start)
+    source=source[:index]+'''   if (obsidian_palette_reload())
+      ozone_set_color_theme(ozone, OZONE_COLOR_THEME_BASIC_BLACK);
+
+'''+source[index:]
+    return '#include <sys/stat.h>\n'+source
+
+
 def download(url, target):
     if target.exists():
         return
@@ -135,7 +152,7 @@ def main():
     from theme import palette
     spectrum = ROOT / 'obsidian/generated/spectrum.json'
     colors = palette(ROOT, derived=json.loads(spectrum.read_text()) if spectrum.exists() else None)
-    patched = patch_ozone(pristine, colors)
+    patched = runtime_ozone(patch_ozone(pristine, colors))
     target = source / 'menu/drivers/ozone.c'
     if target.read_text() != patched:
         target.write_text(patched)
@@ -149,9 +166,10 @@ def main():
     pending = destination/'retroarch.new'
     shutil.copy2(source/'retroarch', pending)
     pending.replace(destination/'retroarch')
-    (destination/'build.json').write_text(json.dumps({'version': VERSION, 'palette': colors,
+    (destination/'build.json').write_text(json.dumps({'version': VERSION, 'palette_mode':'runtime-v1',
+                                                     'adapter_sha256':hashlib.sha256((ROOT/'styles/applications/retroarch-palette.c').read_bytes()).hexdigest(),
                                                      'ffmpeg_fix': FFMPEG_FIX}, indent=2)+'\n')
-    print(f'Installed Steel RetroArch: {destination / "retroarch"}')
+    print(f'Installed theme-aware RetroArch: {destination / "retroarch"}')
     print(f'Ozone assets: {assets}')
 
 

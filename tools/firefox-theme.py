@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 import re
 import tempfile
+import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 PREFERENCE = 'user_pref("toolkit.legacyUserProfileCustomizations.stylesheets", true);'
@@ -48,7 +49,9 @@ def detect_profile(base):
 
 def refresh(root=ROOT, firefox_base=None):
     root = Path(root).resolve()
-    if not (root / 'INSTALLATION.json').is_file():
+    active = root / 'active'
+    installed = (root / 'INSTALLATION.json').is_file() or (active.is_file() and active.read_text().strip() == 'obsidian' and root == (Path.home()/'.local/share/rice-profiles').resolve())
+    if not installed:
         raise ValueError('Run this adapter from an installed Steel profile.')
     base = Path(firefox_base) if firefox_base is not None else Path.home() / '.mozilla/firefox'
     detected = detect_profile(base)
@@ -63,7 +66,11 @@ def refresh(root=ROOT, firefox_base=None):
     spec = importlib.util.spec_from_file_location('steel_firefox_theme', root / 'theme.py')
     theme = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(theme)
-    theme.render(root)
+    added=str(root) not in sys.path
+    if added:sys.path.insert(0,str(root))
+    try:theme.render(root)
+    finally:
+        if added:sys.path.remove(str(root))
     contents = {name: (root / 'obsidian/firefox' / name).read_text() for name in ('userChrome.css', 'userContent.css')}
     user = profile / 'user.js'
     previous = user.read_text() if user.exists() else ''
@@ -71,9 +78,10 @@ def refresh(root=ROOT, firefox_base=None):
     profile.mkdir(parents=True, exist_ok=True, mode=0o700)
     for name, content in contents.items():
         atomic(profile / 'chrome' / name, content)
+    atomic(root / 'obsidian/application-style/firefox-chrome.css', '@-moz-document url-prefix("chrome://") {\n' + contents['userChrome.css'] + '\n}\n')
     atomic(user, previous.rstrip() + '\n' + PREFERENCE + '\n')
     atomic(record, str(profile) + '\n')
-    print(f'Steel Firefox CSS updated: {profile}. Restart this Firefox instance to load CSS.')
+    print(f'Steel Firefox CSS updated: {profile}. Live refresh is available through the Steel Firefox launcher; stock Firefox requires restart.')
     if detected is not None and detected != profile:
         print('Detected default Firefox profile preserved; Steel launcher uses its isolated profile.')
     return profile

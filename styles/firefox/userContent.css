@@ -201,3 +201,32 @@ html[data-darkreader-scheme="dark"] .RDmXvc.Jzkafd {
   html, body, * { scrollbar-width: none !important; }
   *::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
 }
+
+/* Application surfaces for ChatGPT and WhatsApp, independent of extensions. */
+@-moz-document domain("chatgpt.com"), domain("chat.openai.com") {
+ :root,.dark,[data-theme="dark"] {
+  --main-surface-primary:var(--steel-background) !important;
+  --main-surface-secondary:var(--steel-low) !important;
+  --main-surface-tertiary:var(--steel-high) !important;
+  --sidebar-surface-primary:var(--steel-background) !important;
+  --sidebar-surface-secondary:var(--steel-high) !important;
+  --bg-primary:var(--steel-background) !important;
+  --bg-secondary:var(--steel-low) !important;
+  --bg-tertiary:var(--steel-high) !important;
+  --text-primary:var(--steel-text) !important;
+  --text-secondary:var(--steel-muted) !important;
+ }
+ html,body,main {background-color:var(--steel-background) !important;color:var(--steel-text) !important;}
+}
+@-moz-document domain("web.whatsapp.com") {
+ :root,.__fb-dark-mode,.__fb-light-mode {
+  --app-background:var(--steel-background) !important;
+  --panel-background:var(--steel-background) !important;
+  --background-default:var(--steel-background) !important;
+  --conversation-panel-background:var(--steel-background) !important;
+  --incoming-background:var(--steel-low) !important;
+  --outgoing-background:var(--steel-high) !important;
+  --primary:var(--steel-text) !important;
+  --secondary:var(--steel-muted) !important;
+ }
+}

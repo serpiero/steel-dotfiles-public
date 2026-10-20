@@ -1,0 +1,15 @@
+{
+  "detectDarkTheme": false,
+  "theme": {
+    "engine": "dynamicTheme",
+    "mode": 1,
+    "brightness": 100,
+    "contrast": 100,
+    "grayscale": 0,
+    "sepia": 0,
+    "darkSchemeBackgroundColor": "#161a1f",
+    "darkSchemeTextColor": "#d6dbe0",
+    "darkColorScheme": "Custom",
+    "selectionColor": "#374453"
+  }
+}

@@ -1,0 +1,43 @@
+/* Aerion's application palette uses HSL channel triples, not CSS hex colors.
+   Preserve opaque panes and overlay backgrounds; leave message documents alone. */
+html:has(#app) {
+ --background: {{palette.background_hsl}} !important;
+ --foreground: {{palette.text_hsl}} !important;
+ --card: {{palette.background_hsl}} !important;
+ --card-foreground: {{palette.text_hsl}} !important;
+ --popover: {{palette.background_hsl}} !important;
+ --popover-foreground: {{palette.text_hsl}} !important;
+ --primary: {{palette.accent_hsl}} !important;
+ --primary-foreground: {{palette.background_hsl}} !important;
+ --secondary: {{palette.high_hsl}} !important;
+ --secondary-foreground: {{palette.text_hsl}} !important;
+ --muted: {{palette.high_hsl}} !important;
+ --muted-foreground: {{palette.muted_hsl}} !important;
+ --accent: {{palette.selection_hsl}} !important;
+ --accent-foreground: {{palette.text_hsl}} !important;
+ --border: {{palette.high_hsl}} !important;
+ --input: {{palette.high_hsl}} !important;
+ --ring: {{palette.accent_hsl}} !important;
+ color-scheme: dark !important;
+}
+html:has(#app), html:has(#app) body {
+ background-color: var(--steel-background) !important;
+ color: var(--steel-text) !important;
+}
+
+/* Responsive/focus mode already animates the conversation inside this pane.
+   Sliding its containing surface at the same time exposes the inbox beneath
+   the message and WebKit's iframe layer during both navigation directions.
+   Switch only the outer pane atomically; retain the native content animation. */
+html:has(#app) main[data-pane="viewer"].responsive-viewer-overlay {
+ background-color: hsl(var(--background)) !important;
+ transform: none !important;
+ transition: none !important;
+ display: none !important;
+ pointer-events: none;
+ isolation: isolate;
+}
+html:has(#app) main[data-pane="viewer"].responsive-viewer-visible {
+ display: block !important;
+ pointer-events: auto;
+}

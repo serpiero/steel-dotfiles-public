@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "name": "Steel",
+  "palette": {
+    "mode": "fixed",
+    "colors": {
+      "background": "#161a1f",
+      "low": "#1b2127",
+      "surface": "{background}",
+      "high": "#293038",
+      "highest": "#343b44",
+      "text": "#d6dbe0",
+      "muted": "#9aa5b1",
+      "accent": "#9aacc1",
+      "selection": "#374453",
+      "wine": "#bd9299",
+      "sage": "#9aafa4",
+      "warm": "#b9ae98",
+      "elevated": "#1c222a",
+      "accent_pressed": "#8294aa",
+      "terminal_text": "#b8d5df",
+      "terminal_accent": "#79bacd"
+    }
+  },
+  "terminal": {
+    "foreground": "{terminal_text}",
+    "accent": "{terminal_accent}",
+    "ansi_overrides": {
+      "4": "#699cb7",
+      "6": "{terminal_accent}",
+      "7": "{terminal_text}",
+      "12": "#8dc4df",
+      "14": "#a0d5df",
+      "15": "#d8eef1"
+    }
+  },
+  "layout": {
+    "search": {
+      "maxWidth": 1440,
+      "sideMargin": 60,
+      "wideFrom": 1000
+    },
+    "phone": {
+      "maxDeviceWidth": 1100,
+      "minDppx": 1.5,
+      "contentZoom": 1.35,
+      "chromeZoom": 1.25,
+      "spotifyMaxWidth": 650
+    },
+    "whatsapp": {
+      "width": 320,
+      "minWidth": 240,
+      "maxWidth": 560,
+      "chatMinWidth": 320,
+      "compactWidth": 76,
+      "autoCompactAt": 760
+    }
+  },
+  "prompt": {
+    "label": "STEEL"
+  }
+}

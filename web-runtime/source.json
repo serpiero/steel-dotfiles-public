@@ -1,0 +1,6 @@
+{
+  "repository": "https://github.com/quickshell-mirror/quickshell",
+  "revision": "4f508be500dea6e5732cc3d50382a0048b17e7b1",
+  "qt": "6.12.0",
+  "changes": "WebEngineQuick initialization, QApplication argc=1, CMake DBus generated sources fix"
+}

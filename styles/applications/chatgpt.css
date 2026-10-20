@@ -1,0 +1,17 @@
+/* Obsidian desktop ChatGPT: backgrounds only. Intelligence is separate. */
+:root, .dark, [data-theme="dark"] {
+ --main-surface-primary: var(--steel-background) !important;
+ --main-surface-secondary: var(--steel-background) !important;
+ --main-surface-tertiary: var(--steel-low) !important;
+ --sidebar-surface-primary: var(--steel-background) !important;
+ --sidebar-surface-secondary: var(--steel-background) !important;
+ --bg-primary: var(--steel-background) !important;
+ --bg-secondary: var(--steel-background) !important;
+ --bg-tertiary: var(--steel-low) !important;
+ --bg-elevated-primary: var(--steel-background) !important;
+ --bg-elevated-secondary: var(--steel-low) !important;
+}
+html, body, .bg-token-main-surface-primary, .bg-token-main-surface-secondary,
+.bg-token-sidebar-surface-primary, .bg-token-sidebar-surface-secondary {
+ background-color: var(--steel-background) !important;
+}

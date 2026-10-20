@@ -1,0 +1,50 @@
+configuration {
+    modi: "drun";
+    show-icons: true;
+    drun-display-format: "{name}";
+    matching: "fuzzy";
+    sorting-method: "fzf";
+    display-drun: "";
+    scroll-method: 0;
+    click-to-exit: true;
+}
+* {
+    background-color: transparent;
+    text-color: #d6dbe0;
+    font: "Google Sans Flex 11.25 @wght=450,wdth=100";
+}
+window {
+    fullscreen: true;
+    padding: 0px;
+    border: 0px;
+    background-color: transparent;
+    spacing: 0px;
+    children: [ icon-dismiss-top, spotlight-row, icon-dismiss-bottom ];
+}
+icon-dismiss-top, icon-dismiss-bottom, icon-dismiss-left, icon-dismiss-right {
+    size: 0px;
+    action: "kb-cancel";
+    padding: 0px;
+    border: 0px;
+    expand: true;
+}
+icon-dismiss-top { size: 28%; expand: false; }
+spotlight-row { orientation: horizontal; expand: false; children: [ icon-dismiss-left, mainbox, icon-dismiss-right ]; }
+mainbox {
+    width: 720px;
+    expand: false;
+    padding: 16px;
+    border: 0px;
+    border-radius: 22px;
+    background-color: #161a1fd9;
+    children: [ inputbar, listview ];
+    spacing: 12px;
+}
+inputbar { children: [ icon-search, entry ]; spacing: 14px; padding: 8px 10px; }
+icon-search { filename: "system-search-symbolic"; size: 22px; expand: false; vertical-align: 0.5; }
+entry { placeholder: ""; vertical-align: 0.5; }
+listview { lines: 6; fixed-height: true; expand: false; spacing: 4px; scrollbar: false; }
+element { children: [ element-icon, element-text ]; padding: 11px 12px; spacing: 14px; border-radius: 12px; }
+element selected.normal { background-color: #374453; }
+element-icon { size: 26px; }
+element-text { vertical-align: 0.5; }

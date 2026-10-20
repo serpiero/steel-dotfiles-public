@@ -1,0 +1,29 @@
+# Obsidian: Kali-style two-line prompt without Powerline separators.
+add_newline = true
+palette = "obsidian_steel"
+format = "[╭─](accent)[STEEL](bold text) $directory$git_branch$git_status\n[╰─](accent)$character"
+
+[directory]
+style = "accent"
+format = "[$path]($style)"
+truncation_length = 3
+truncation_symbol = "…/"
+
+[git_branch]
+format = "[ · $branch](muted)"
+
+[git_status]
+format = "[ $all_status$ahead_behind](wine)"
+
+[character]
+success_symbol = '[\$](text)'
+error_symbol = '[\$](wine)'
+vimcmd_symbol = '[\$](sage)'
+format = "$symbol "
+
+[palettes.obsidian_steel]
+text = "#b8d5df"
+accent = "#79bacd"
+muted = "#9aa5b1"
+wine = "#bd9299"
+sage = "#9aafa4"

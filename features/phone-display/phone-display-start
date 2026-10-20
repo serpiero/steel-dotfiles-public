@@ -1,0 +1,110 @@
+#!/usr/bin/python3
+"""Start or stop only the S23's virtual display and VNC server."""
+import fcntl
+import json
+import os
+from pathlib import Path
+import signal
+import socket
+import subprocess
+import sys
+import time
+
+RUNTIME = Path(os.environ.get('XDG_RUNTIME_DIR', f'/run/user/{os.getuid()}'))
+PID_FILE = RUNTIME / 'phone-vnc.pid'
+CONTROL = RUNTIME / 'phone-vncctl'
+ARGS = ['/usr/bin/wayvnc', '-o', 'HEADLESS-1', '--max-fps=120',
+        '--disable-resizing', '--socket=' + str(CONTROL), '127.0.0.1', '5900']
+
+def run(*args):
+    result = subprocess.run(args, check=True, capture_output=True, text=True, timeout=10)
+    if result.stdout.lower().startswith('error'):
+        raise RuntimeError(result.stdout.strip())
+    return result.stdout
+
+def phone_server(pid):
+    try:
+        cmd = [part.decode() for part in (Path('/proc') / str(pid) / 'cmdline').read_bytes().split(b'\0') if part]
+        return (bool(cmd) and Path(cmd[0]).name == 'wayvnc' and '-o' in cmd
+                and cmd[cmd.index('-o') + 1] == 'HEADLESS-1'
+                and cmd[-2:] == ['127.0.0.1', '5900'])
+    except (OSError, ValueError, IndexError):
+        return False
+
+def stop_servers(except_pid=None):
+    for proc in Path('/proc').iterdir():
+        if not proc.name.isdecimal() or int(proc.name) == except_pid or not phone_server(proc.name):
+            continue
+        try:
+            os.kill(int(proc.name), signal.SIGTERM)
+            for _ in range(20):
+                if not phone_server(proc.name):
+                    break
+                time.sleep(0.05)
+        except ProcessLookupError:
+            pass
+
+def displays():
+    return json.loads(run('hyprctl', '-j', 'monitors', 'all'))
+
+def stop():
+    stop_servers()
+    PID_FILE.unlink(missing_ok=True)
+    if any(m['name'] == 'HEADLESS-1' for m in displays()):
+        run('hyprctl', 'output', 'remove', 'HEADLESS-1')
+    print('Pantalla S23 y su servidor VNC detenidos.', flush=True)
+
+def start():
+    phone = next((m for m in displays() if m['name'] == 'HEADLESS-1'), None)
+    if phone is None:
+        run('hyprctl', 'output', 'create', 'headless', 'HEADLESS-1')
+    if phone is None or phone.get('disabled') or (phone['width'], phone['height']) != (1080, 2340) or abs(phone['refreshRate'] - 120) > 0.1 or phone.get('scale') != 2:
+        right = max((m['x'] + round(m['width'] / m.get('scale', 1)) for m in displays() if m['name'] != 'HEADLESS-1' and m.get('mirrorOf', 'none') == 'none'), default=0)
+        run('hyprctl', 'eval', 'hl.monitor({output="HEADLESS-1", mode="1080x2340@120", position="' + str(right) + 'x0", scale=2})')
+    phone = next((m for m in displays() if m['name'] == 'HEADLESS-1'), None)
+    if phone is None:
+        raise RuntimeError('No se pudo crear la pantalla HEADLESS-1; no crear salidas adicionales.')
+    if (phone['width'], phone['height']) != (1080, 2340) or phone['refreshRate'] < 119 or phone.get('scale') != 2:
+        raise RuntimeError('La pantalla no aceptó la resolución vertical a 120 Hz.')
+
+    # Adopt an already running identical server and restore its PID record.
+    for proc in Path('/proc').iterdir():
+        if not proc.name.isdecimal() or not phone_server(proc.name):
+            continue
+        cmd = [part.decode() for part in (proc / 'cmdline').read_bytes().split(b'\0') if part]
+        if cmd == ARGS:
+            PID_FILE.write_text(proc.name)
+            return
+    stop_servers()
+    state = Path.home() / '.local/state'
+    state.mkdir(parents=True, exist_ok=True)
+    with (state / 'phone-vnc.log').open('a') as log:
+        server = subprocess.Popen(ARGS, stdout=log, stderr=log, start_new_session=True)
+    for _ in range(30):
+        if server.poll() is not None:
+            raise RuntimeError('VNC no pudo iniciarse; revisar phone-vnc.log.')
+        try:
+            with socket.create_connection(('127.0.0.1', 5900), timeout=0.2) as conn:
+                if conn.recv(12).startswith(b'RFB '):
+                    PID_FILE.write_text(str(server.pid))
+                    print('Pantalla S23 1080×2340 a 120 Hz, escala 2× y VNC listos.', flush=True)
+                    return
+        except OSError:
+            pass
+        time.sleep(0.1)
+    server.terminate()
+    raise RuntimeError('VNC no respondió en el puerto 5900.')
+
+def main():
+    RUNTIME.mkdir(parents=True, exist_ok=True)
+    with (RUNTIME / 'phone-display-start.lock').open('w') as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        if sys.argv[1:] == ['--stop']:
+            stop()
+        elif not sys.argv[1:]:
+            start()
+        else:
+            raise SystemExit('Uso: phone-display-start [--stop]')
+
+if __name__ == '__main__':
+    main()

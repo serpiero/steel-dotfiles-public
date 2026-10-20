@@ -1,0 +1,133 @@
+#!/usr/bin/python3
+"""Own the S23 USB display lifecycle for one Hyprland session."""
+import fcntl
+import json
+import os
+from pathlib import Path
+import signal
+import subprocess
+import sys
+import threading
+import time
+
+SERIAL = os.environ.get('PHONE_ADB_SERIAL', '')
+RUNTIME = Path(os.environ.get('XDG_RUNTIME_DIR', f'/run/user/{os.getuid()}'))
+HELPER = str(Path(__file__).resolve().with_name('phone-display-start'))
+STOP = threading.Event()
+
+def command(*args, timeout=6):
+    result = subprocess.run(args, capture_output=True, text=True, timeout=timeout)
+    if result.returncode or result.stdout.lower().startswith('error'):
+        raise RuntimeError((result.stderr or result.stdout).strip())
+    return result.stdout.strip()
+
+def log(message):
+    print(time.strftime('%Y-%m-%d %H:%M:%S') + ' ' + message, flush=True)
+
+class Watcher:
+    def __init__(self):
+        self.connected = None
+        self.last_error = None
+
+    def online(self):
+        global SERIAL
+        try:
+            if not SERIAL:
+                SERIAL = command('adb', '-d', 'get-serialno')
+                if not SERIAL or SERIAL == 'unknown':
+                    SERIAL = ''
+                    return False
+            return command('adb', '-s', SERIAL, 'get-state') == 'device'
+        except (RuntimeError, subprocess.TimeoutExpired):
+            return False
+
+    def healthy(self):
+        try:
+            pid = int((RUNTIME / 'phone-vnc.pid').read_text())
+            parts = (Path('/proc') / str(pid) / 'cmdline').read_bytes().split(b'\0')
+            if not parts or Path(os.fsdecode(parts[0])).name != 'wayvnc' or b'HEADLESS-1' not in parts:
+                return False
+            monitors = json.loads(command('hyprctl', 'monitors', '-j'))
+            if not any(m['name'] == 'HEADLESS-1' for m in monitors):
+                return False
+            return 'tcp:5900 tcp:5900' in command('adb', '-s', SERIAL, 'reverse', '--list')
+        except (OSError, ValueError, RuntimeError, subprocess.TimeoutExpired):
+            return False
+
+    def connect(self):
+        command('adb', '-s', SERIAL, 'reverse', 'tcp:5900', 'tcp:5900')
+        command(HELPER, timeout=15)
+        command('adb', '-s', SERIAL, 'shell', 'am', 'start', '-W',
+                '-a', 'android.intent.action.VIEW', '-d', 'vnc://127.0.0.1:5900',
+                '-p', 'com.gaurav.avnc', timeout=12)
+        log('S23 conectado: pantalla lista y AVNC abierto automáticamente.')
+
+    def disconnect(self):
+        command(HELPER, '--stop', timeout=15)
+        log('S23 desconectado: pantalla virtual y VNC retirados.')
+
+    def tick(self):
+        online = self.online()
+        try:
+            if online:
+                if self.connected is not True or not self.healthy():
+                    self.connect()
+                self.connected = True
+            elif self.connected is not False:
+                # Also remove a stale output when starting without a phone.
+                self.disconnect()
+                self.connected = False
+            self.last_error = None
+        except (RuntimeError, OSError, subprocess.TimeoutExpired) as error:
+            if str(error) != self.last_error:
+                log('Reintentando: ' + str(error))
+            self.last_error = str(error)
+            # A failed connection must retry even if VNC itself came up.
+            self.connected = None
+
+def wait_for_session():
+    # hyprland.start can run before hyprctl's instance list is ready.
+    for _ in range(60):
+        if STOP.is_set():
+            return None
+        try:
+            instances = json.loads(command('hyprctl', 'instances', '-j'))
+            match = next((i for i in instances if i['instance'] == os.environ.get('HYPRLAND_INSTANCE_SIGNATURE')), None)
+            if match:
+                json.loads(command('hyprctl', 'monitors', '-j'))
+                return match['pid']
+        except (RuntimeError, OSError, ValueError, subprocess.TimeoutExpired):
+            pass
+        STOP.wait(0.5)
+    raise RuntimeError('Hyprland aún no está listo.')
+
+def main():
+    RUNTIME.mkdir(parents=True, exist_ok=True)
+    with (RUNTIME / 'phone-usb-monitor.lock').open('w') as lock:
+        try:
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            return
+        signal.signal(signal.SIGTERM, lambda *_: STOP.set())
+        signal.signal(signal.SIGINT, lambda *_: STOP.set())
+        pid = wait_for_session()
+        if pid is None:
+            return
+        watcher = Watcher()
+        log('Vigilante S23 listo; esperando el cable USB.')
+        try:
+            while not STOP.is_set() and (Path('/proc') / str(pid)).exists():
+                watcher.tick()
+                STOP.wait(2)
+        finally:
+            try:
+                watcher.disconnect()
+            except (RuntimeError, OSError, subprocess.TimeoutExpired) as error:
+                log('Fin de sesión: ' + str(error))
+
+if __name__ == '__main__':
+    try:
+        main()
+    except Exception as error:
+        log(str(error))
+        sys.exit(1)

@@ -1,0 +1,29 @@
+/* Steel palette: CSS only, keeping Spotify scripts and snapshots original. */
+.encore-dark-theme, .encore-dark-theme .encore-base-set {
+ --background-base:var(--steel-background) !important;
+ --background-highlight:var(--steel-high) !important;
+ --background-press:var(--steel-selection) !important;
+ --background-elevated-base:var(--steel-elevated) !important;
+ --background-elevated-highlight:var(--steel-high) !important;
+ --background-tinted-base:var(--steel-high) !important;
+ --text-base:var(--steel-text) !important;
+ --text-subdued:var(--steel-muted) !important;
+ --text-bright-accent:var(--steel-terminal-text) !important;
+ --essential-base:var(--steel-accent) !important;
+ --essential-subdued:var(--steel-muted) !important;
+ --essential-bright-accent:var(--steel-terminal-text) !important;
+ --decorative-base:var(--steel-accent) !important;
+}
+.encore-bright-accent-set {
+ --background-base:var(--steel-accent) !important;
+ --background-highlight:var(--steel-terminal-text) !important;
+ --background-press:var(--steel-accent-pressed) !important;
+ --text-base:var(--steel-background) !important;
+ --essential-base:var(--steel-background) !important;
+}
+.Root, .Root__main-view, .Root__nav-bar, .Root__now-playing-bar {
+ background-color:var(--steel-background) !important;
+}
+@media (max-width:{{layout.phone.spotifyMaxWidth}}px) and (min-resolution:{{layout.phone.minDppx}}dppx) {
+ body { zoom:{{layout.phone.contentZoom}}; }
+}

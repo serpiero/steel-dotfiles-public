@@ -1,0 +1,18 @@
+{
+  "background": "#161a1f",
+  "low": "#1b2127",
+  "surface": "#161a1f",
+  "high": "#293038",
+  "highest": "#343b44",
+  "text": "#d6dbe0",
+  "muted": "#9aa5b1",
+  "accent": "#9aacc1",
+  "selection": "#374453",
+  "wine": "#bd9299",
+  "sage": "#9aafa4",
+  "warm": "#b9ae98",
+  "elevated": "#1c222a",
+  "accent_pressed": "#8294aa",
+  "terminal_text": "#b8d5df",
+  "terminal_accent": "#79bacd"
+}

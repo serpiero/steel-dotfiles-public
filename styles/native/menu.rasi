@@ -1,0 +1,8 @@
+* { background-color: {{palette.background}}d9; text-color: {{palette.text}}; font: "monospace 12"; }
+window { width: 560px; border: 0px; border-color: {{palette.muted}}; border-radius: 18px; padding: 18px; }
+mainbox { children: [ inputbar, message, listview ]; spacing: 12px; }
+inputbar { children: [ prompt, entry ]; spacing: 10px; }
+listview { lines: 5; spacing: 6px; }
+element { padding: 10px; border-radius: 10px; }
+element selected.normal { background-color: {{palette.selection}}; }
+element-text, prompt, entry, textbox { background-color: transparent; }

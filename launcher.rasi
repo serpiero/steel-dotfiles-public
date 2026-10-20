@@ -1,0 +1,4 @@
+@theme "menu.rasi"
+window { width: 720px; }
+listview { lines: 9; }
+element-icon { size: 24px; }

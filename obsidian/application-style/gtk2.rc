@@ -1,0 +1,2 @@
+include "/usr/share/themes/Breeze-Dark/gtk-2.0/gtkrc"
+gtk-color-scheme = "bg_color:#161a1f\nbase_color:#161a1f\nfg_color:#d6dbe0\ntext_color:#d6dbe0\nselected_bg_color:#374453\nselected_fg_color:#d6dbe0"

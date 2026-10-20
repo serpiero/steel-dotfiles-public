@@ -1,0 +1,2 @@
+#!/bin/sh
+exec /usr/bin/btop --config "$HOME/.local/share/rice-profiles/obsidian/btop/btop.conf" --themes-dir "$HOME/.local/share/rice-profiles/obsidian/btop/themes" "$@"

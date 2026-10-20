@@ -1,0 +1,18 @@
+:root {
+  --steel-accent: #9aacc1;
+  --steel-accent-pressed: #8294aa;
+  --steel-background: #161a1f;
+  --steel-elevated: #1c222a;
+  --steel-high: #293038;
+  --steel-highest: #343b44;
+  --steel-low: #1b2127;
+  --steel-muted: #9aa5b1;
+  --steel-sage: #9aafa4;
+  --steel-selection: #374453;
+  --steel-surface: #161a1f;
+  --steel-terminal-accent: #79bacd;
+  --steel-terminal-text: #b8d5df;
+  --steel-text: #d6dbe0;
+  --steel-warm: #b9ae98;
+  --steel-wine: #bd9299;
+}

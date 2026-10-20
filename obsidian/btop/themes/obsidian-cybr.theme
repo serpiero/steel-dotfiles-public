@@ -1,0 +1,63 @@
+# ---------------------------------------
+# cybr-btop   lucid theme for btop
+# Project:    https://github.com/cybrcore/cybr-btop
+# Author:     scherrer-txt   |   License:     GPL-3.0
+# Source:     ~/.config/btop/themes/cybrcore.theme
+# ---------------------------------------
+
+theme[main_bg]="#161a1f"
+theme[main_fg]="#d6dbe0"
+theme[title]="#d6dbe0"
+
+theme[hi_fg]="#9aacc1"
+theme[selected_bg]="#374453"
+theme[selected_fg]="#d6dbe0"
+theme[proc_misc]="#9aacc1"
+
+theme[inactive_fg]="#374453"
+theme[meter_bg]="#374453"
+theme[div_line]="#374453"
+
+theme[graph_bg]="#161a1f"
+
+theme[graph_text]="#9aacc1"
+theme[mem_box]="#9aacc1"
+theme[net_box]="#9aacc1"
+theme[proc_box]="#9aacc1"
+theme[cpu_box]="#9aacc1"
+
+theme[temp_start]="#b9ae98"
+theme[temp_mid]="#b9ae98"
+theme[temp_end]="#bd9299"
+
+theme[cpu_start]="#9aacc1"
+theme[cpu_mid]="#9aacc1"
+theme[cpu_end]="#9aacc1"
+
+theme[free_start]="#9aafa4"
+theme[free_mid]="#9aafa4"
+theme[free_end]="#9aafa4"
+
+theme[cached_start]="#9aacc1"
+theme[cached_mid]="#9aacc1"
+theme[cached_end]="#9aacc1"
+
+theme[available_start]="#9aafa4"
+theme[available_mid]="#9aafa4"
+theme[available_end]="#9aafa4"
+
+theme[used_start]="#9aacc1"
+theme[used_mid]="#9aacc1"
+theme[used_end]="#bd9299"
+
+theme[download_start]="#9aacc1"
+theme[download_mid]="#9aacc1"
+theme[download_end]="#9aacc1"
+
+theme[upload_start]="#9aacc1"
+theme[upload_mid]="#9aacc1"
+theme[upload_end]="#9aacc1"
+
+theme[process_start]="#9aacc1"
+theme[process_mid]="#9aacc1"
+theme[process_end]="#9aacc1"
